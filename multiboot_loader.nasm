@@ -67,6 +67,8 @@ mb2_boot_str:
 db 'Jumping to multiboot2_entry',0
 unknown_boot_str:
 db 'Jumping to unknwon_bootloader_entry',0
+hang_str:
+db 'Hanging',0
 
 section .bootstrap_stack
 stack_bottom:
@@ -152,6 +154,8 @@ select_entry:
 	call putstr
 	call unknown_bootloader_entry ; ()
 hang:
+	mov eax, hang_str
+	call putstr
 	cli
 
 hang_loop:
