@@ -61,8 +61,12 @@ multiboot2_header:
 multiboot2_header_end:
 
 section .rodata
-hello:
-db 'hello',0
+mb1_boot_str:
+db 'Jumping to multiboot1_entry',0
+mb2_boot_str:
+db 'Jumping to multiboot2_entry',0
+unknown_boot_str:
+db 'Jumping to unknwon_bootloader_entry',0
 
 section .bootstrap_stack
 stack_bottom:
@@ -79,10 +83,8 @@ start:
 	call check_cpuid
 	call setup_mode
 %endif
-	mov eax, hello
-	call putstr
+	call select_entry
 	jmp hang
-	;call select_entry
 check_cpuid:
 	; Check if CPUID is supported by attempting to flip the ID bit (bit 21)
 	; in the FLAGS register. If we can flip it, CPUID is available.
@@ -146,6 +148,8 @@ select_entry:
 	cmp eax, MB2_MAGIC
 	je boot_mb2
 
+	mov eax, unknown_boot_str
+	call putstr
 	call unknown_bootloader_entry ; ()
 hang:
 	cli
@@ -182,12 +186,16 @@ putstr_done:
 
 extern multiboot1_entry
 boot_mb1:
+	mov eax, mb1_boot_str
+	call putstr
 	push ebx ; push multiboot information
 	call multiboot1_entry ; (multiboot1_information_raw)
 	jmp hang
 
 extern multiboot2_entry
 boot_mb2:
+	mov eax, mb1_boot_str
+	call putstr
 	push ebx ; push multiboot information
 	call multiboot2_entry ; (multiboot2_information_raw)
 	jmp hang
