@@ -1,0 +1,11 @@
+[package]
+name = "multiboot_loader" # the name of the package
+version = "0.1.0"    # the current version, obeying semver
+authors = ["clueless_@live.co.uk"]
+build = "build.rs"
+
+[lib]
+name = "multiboot_loader"
+
+[build-dependencies]
+nasm = { git = "https://github.com/xClueless/nasm-rs.git" }
