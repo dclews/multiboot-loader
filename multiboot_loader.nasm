@@ -74,9 +74,11 @@ extern unknown_bootloader_entry
 
 global start
 start:
-	mov esp, stack_top
+	mov esp, stack_top	
+%ifdef LONG_MODE
 	call check_cpuid
 	call setup_mode
+%endif
 	mov eax, hello
 	call putstr
 	jmp hang

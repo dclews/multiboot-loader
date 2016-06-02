@@ -7,5 +7,8 @@ build = "build.rs"
 [lib]
 name = "multiboot_loader"
 
+[features]
+long_mode = []
+
 [build-dependencies]
 nasm = { git = "https://github.com/xClueless/nasm-rs.git" }
