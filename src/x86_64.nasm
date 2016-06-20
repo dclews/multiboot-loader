@@ -40,7 +40,8 @@ enter_long_mode:
 	call id_map_pse_64
 	call enable_paging
 	call enter_ia32e
-	jmp GDT64.Code:return
+	lgdt [GDT64.Pointer]	; Load the 64-bit global descriptor table.
+	jmp GDT64.Code:return	; Return in 64-bit mode.
 return:
 	ret
 
