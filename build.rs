@@ -10,7 +10,7 @@ fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
     let mut nasm_files: Vec<&str> = Vec::new();
     let mut defines: Vec<&str> = Vec::new();
-    nasm_files.push("multiboot_loader.nasm");
+    nasm_files.push("src/loader.nasm");
 
 
     if env::var("CARGO_FEATURE_LONG_MODE").is_ok() {
