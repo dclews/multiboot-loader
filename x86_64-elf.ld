@@ -5,7 +5,7 @@ SECTIONS
 	. = 1M;
 	.text BLOCK(4K) : ALIGN(4K)
 	{
-		KEEP(*(.multiboot))	
+		KEEP(*(.multiboot))
 		*(.text)
 		LD_TEXT_END = .;
 	}

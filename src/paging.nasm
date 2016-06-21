@@ -1,11 +1,15 @@
 [BITS 32]
 section .bss
+global pml4
 pml4:
 resb 4096 ; [512*u64]
+global pdp
 pdp:
 resb 4096 ; [512*u64]
+global pd
 pd:
 resb 4096 ; [512*u64]
+global pt
 pt:
 resb 4096 ; [512*u64]
 
@@ -29,13 +33,13 @@ id_map_pse_64:
 	mov [pdp], eax
 
 	; PD[0] -> PT[0]
-	mov eax, pt
-	or eax, 0b10000011 ; Set as P+W+4M
+	mov eax, 0b10000011 ; Set as P+W+4M
 	mov [pd], eax
+	ret
 
-	; PT[0] -> 0x000000 -> 0x80000000
-	mov eax, 0x3
-	mov [pt], eax
+load_pml4:
+	mov eax, pml4
+	mov cr3, eax
 	ret
 
 enable_paging:

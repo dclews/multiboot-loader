@@ -48,6 +48,8 @@ MB2_MAGIC equ 0xE85250D6
 MB2_ELF_SHX_FLAG equ 0x20
 MB2_FLAGS equ MB2_ELF_SHX_FLAG
 
+MB2_LOADER_ID equ 0x36D76289
+
 multiboot2_header:
 	dd MB2_MAGIC
 	dd MB2_FLAGS
@@ -65,20 +67,40 @@ db 'Jumping to multiboot1_entry',0
 mb2_boot_str:
 db 'Jumping to multiboot2_entry',0
 
+section .bss
+multiboot_info_ptr:
+resd 1
+multiboot_magic:
+resd 1
+
 section .text
 extern multiboot1_entry
-boot_mb1:
-	mov eax, mb1_boot_str
-	call putstr
-	push ebx ; push multiboot information
+boot_mb1_32:
+	;mov eax, mb1_boot_str
+	;call putstr
+	mov eax, [multiboot_info_ptr]
+	push eax ; push multiboot information
 	call multiboot1_entry ; (multiboot1_information_raw)
 	jmp hang
 
 extern multiboot2_entry
-boot_mb2:
-	mov eax, mb1_boot_str
-	call putstr
-	push ebx ; push multiboot information
+boot_mb2_32:
+	mov eax, [multiboot_info_ptr]
+	push eax ; push multiboot information
+	call multiboot2_entry ; (multiboot2_information_raw)
+	jmp hang
+
+[BITS 64]
+boot_mb1_64:
+	mov rdi, 0
+	mov edi, [multiboot_info_ptr] ; pass multiboot information
+	call multiboot1_entry ; (multiboot1_information_raw)
+	jmp hang
+
+extern multiboot2_entry
+boot_mb2_64:
+	mov rdi, 0
+	mov edi, [multiboot_info_ptr] ; pass multiboot information
 	call multiboot2_entry ; (multiboot2_information_raw)
 	jmp hang
 

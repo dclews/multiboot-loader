@@ -36,12 +36,19 @@ enter_ia32e:
 	ret
 
 enter_long_mode:
-	call enable_pae
 	call id_map_pse_64
-	call enable_paging
+	call load_pml4
+	call enable_pae
 	call enter_ia32e
+	call enable_paging
 	lgdt [GDT64.Pointer]	; Load the 64-bit global descriptor table.
-	jmp GDT64.Code:return	; Return in 64-bit mode.
-return:
-	ret
+	jmp GDT64.Code:set_long_mode_segment_selectors ; Return in 64-bit mode.
 
+set_long_mode_segment_selectors:
+	mov ax, GDT64.Data	; Set the A-register to the data descriptor.
+	mov ds, ax		; Set the data segment to the A-register.
+	mov es, ax		; Set the extra segment to the A-register.
+	mov fs, ax		; Set the F-segment to the A-register.
+	mov gs, ax		; Set the G-segment to the A-register.
+	mov ss, ax		; Set the stack segment to the A-register.
+	jmp select_entry_64	; Can't ret as we have a new SS

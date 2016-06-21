@@ -6,7 +6,6 @@ putstr_hang:
 
 ; str@eax
 putstr:
-	pushad
 	mov edi, 0xb8000
 putchar:
 	mov byte bl, [eax] ; Move str[eax] into bl
@@ -17,6 +16,5 @@ putchar:
 	inc eax
 	jmp putchar
 putstr_done:
-	popad
 	ret
 
